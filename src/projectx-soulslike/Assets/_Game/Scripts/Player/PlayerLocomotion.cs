@@ -13,7 +13,7 @@ namespace PXELDAR
         [HideInInspector] public Transform myTransform;
         [HideInInspector] public AnimatorHandler animatorHandler;
 
-        public Rigidbody rigidbody;
+        public Rigidbody rigidBody;
         public GameObject normalCamera;
 
 
@@ -29,7 +29,7 @@ namespace PXELDAR
 
         private void Start()
         {
-            rigidbody = GetComponent<Rigidbody>();
+            rigidBody = GetComponent<Rigidbody>();
             _inputHandler = GetComponent<InputHandler>();
             animatorHandler = GetComponentInChildren<AnimatorHandler>();
             _cameraObject = Camera.main.transform;
@@ -48,12 +48,13 @@ namespace PXELDAR
             _moveDirection = _cameraObject.forward * _inputHandler.vertical;
             _moveDirection += _cameraObject.right * _inputHandler.horizontal;
             _moveDirection.Normalize();
+            _moveDirection.y = 0;
 
             float speed = _movementSpeed;
             _moveDirection *= speed;
 
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
-            rigidbody.velocity = projectedVelocity;
+            rigidBody.velocity = projectedVelocity;
 
             animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0);
 

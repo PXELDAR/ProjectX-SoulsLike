@@ -17,20 +17,11 @@ namespace PXELDAR
         public bool b_Input;
         public bool rollFlag;
         public bool sprintFlag;
-        public bool isInteracting;
 
         private PlayerControls _inputActions;
-        private CameraHandler _cameraHandler;
 
         private Vector2 _movementInput;
         private Vector2 _cameraInput;
-
-        //=================================================================================================
-
-        private void Awake()
-        {
-            _cameraHandler = CameraHandler.instance;
-        }
 
         //=================================================================================================
 
@@ -53,16 +44,7 @@ namespace PXELDAR
 
         //=================================================================================================
 
-        private void FixedUpdate()
-        {
-            float delta = Time.fixedDeltaTime;
 
-            if (_cameraHandler)
-            {
-                _cameraHandler.FollowTarget(delta);
-                _cameraHandler.HandleCameraRotation(delta, mouseX, mouseY);
-            }
-        }
 
         //=================================================================================================
 

@@ -7,24 +7,28 @@ namespace PXELDAR
         //=================================================================================================
 
         public Animator animator;
-        public InputHandler inputHandler;
-        public PlayerLocomotion playerLocomotion;
-
         public bool canRotate;
+
+        private PlayerManager _playerManager;
+        private InputHandler _inputHandler;
+        private PlayerLocomotion _playerLocomotion;
 
         private int _vertical;
         private int _horizontal;
+
+        private const string _verticalKey = "Vertical";
+        private const string _horizontalKey = "Horizontal";
 
         //=================================================================================================
 
         public void Initialize()
         {
+            _playerManager = GetComponentInChildren<PlayerManager>();
             animator = GetComponent<Animator>();
-            inputHandler = GetComponentInParent<InputHandler>();
-            playerLocomotion = GetComponentInParent<PlayerLocomotion>();
-
-            _vertical = Animator.StringToHash("Vertical");
-            _horizontal = Animator.StringToHash("Horizontal");
+            _inputHandler = GetComponentInParent<InputHandler>();
+            _playerLocomotion = GetComponentInParent<PlayerLocomotion>();
+            _vertical = Animator.StringToHash(_verticalKey);
+            _horizontal = Animator.StringToHash(_horizontalKey);
         }
 
         //=================================================================================================
@@ -118,14 +122,14 @@ namespace PXELDAR
 
         private void OnAnimatorMove()
         {
-            if (!inputHandler.isInteracting) return;
+            if (!_playerManager.isInteracting) return;
 
             float delta = Time.deltaTime;
-            playerLocomotion.rigidBody.drag = 0;
+            _playerLocomotion.rigidBody.drag = 0;
             Vector3 deltaPosition = animator.deltaPosition;
             deltaPosition.y = 0;
             Vector3 velocity = deltaPosition / delta;
-            playerLocomotion.rigidBody.velocity = velocity;
+            _playerLocomotion.rigidBody.velocity = velocity;
         }
 
         //=================================================================================================

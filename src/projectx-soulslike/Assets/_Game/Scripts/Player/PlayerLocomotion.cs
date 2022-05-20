@@ -45,23 +45,8 @@ namespace PXELDAR
 
             _inputHandler.TickInput(delta);
 
-            _moveDirection = _cameraObject.forward * _inputHandler.vertical;
-            _moveDirection += _cameraObject.right * _inputHandler.horizontal;
-            _moveDirection.Normalize();
-            _moveDirection.y = 0;
-
-            float speed = _movementSpeed;
-            _moveDirection *= speed;
-
-            Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
-            rigidBody.velocity = projectedVelocity;
-
-            animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0);
-
-            if (animatorHandler.canRotate)
-            {
-                HandleRotation(delta);
-            }
+            HandleMovement(delta);
+            HandleRollingAndSprinting(delta);
         }
 
         //=================================================================================================
@@ -89,6 +74,54 @@ namespace PXELDAR
             Quaternion targetRotation = Quaternion.Slerp(myTransform.rotation, tr, rotationSpeed * delta);
 
             myTransform.rotation = targetRotation;
+        }
+
+        //=================================================================================================
+
+        public void HandleMovement(float delta)
+        {
+            _moveDirection = _cameraObject.forward * _inputHandler.vertical;
+            _moveDirection += _cameraObject.right * _inputHandler.horizontal;
+            _moveDirection.Normalize();
+            _moveDirection.y = 0;
+
+            float speed = _movementSpeed;
+            _moveDirection *= speed;
+
+            Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
+            rigidBody.velocity = projectedVelocity;
+
+            animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0);
+
+            if (animatorHandler.canRotate)
+            {
+                HandleRotation(delta);
+            }
+        }
+
+        //=================================================================================================
+
+        public void HandleRollingAndSprinting(float delta)
+        {
+            if (animatorHandler.animator.GetBool("isInteracting")) return;
+
+            if (_inputHandler.rollFlag)
+            {
+                _moveDirection = _cameraObject.forward * _inputHandler.vertical;
+                _moveDirection += _cameraObject.right * _inputHandler.horizontal;
+
+                if (_inputHandler.moveAmount > 0)
+                {
+                    animatorHandler.PlayTargetAnimation("Roll", true);
+                    _moveDirection.y = 0;
+                    Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
+                    myTransform.rotation = rollRotation;
+                }
+                else
+                {
+                    // animatorHandler.PlayTargetAnimation("Backstep", true);
+                }
+            }
         }
 
         //=================================================================================================

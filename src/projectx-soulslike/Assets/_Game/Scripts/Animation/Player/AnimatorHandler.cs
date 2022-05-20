@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PXELDAR
@@ -9,6 +7,9 @@ namespace PXELDAR
         //=================================================================================================
 
         public Animator animator;
+        public InputHandler inputHandler;
+        public PlayerLocomotion playerLocomotion;
+
         public bool canRotate;
 
         private int _vertical;
@@ -19,6 +20,9 @@ namespace PXELDAR
         public void Initialize()
         {
             animator = GetComponent<Animator>();
+            inputHandler = GetComponentInParent<InputHandler>();
+            playerLocomotion = GetComponentInParent<PlayerLocomotion>();
+
             _vertical = Animator.StringToHash("Vertical");
             _horizontal = Animator.StringToHash("Horizontal");
         }
@@ -83,6 +87,15 @@ namespace PXELDAR
 
         //=================================================================================================
 
+        public void PlayTargetAnimation(string targetAnim, bool isInteracting)
+        {
+            animator.applyRootMotion = isInteracting;
+            animator.SetBool("isInteracting", isInteracting);
+            animator.CrossFade(targetAnim, 0.2f);
+        }
+
+        //=================================================================================================
+
         public void CanRotate()
         {
             canRotate = true;
@@ -93,6 +106,20 @@ namespace PXELDAR
         public void StopRotation()
         {
             canRotate = false;
+        }
+
+        //=================================================================================================
+
+        private void OnAnimatorMove()
+        {
+            if (!inputHandler.isInteracting) return;
+
+            float delta = Time.deltaTime;
+            playerLocomotion.rigidBody.drag = 0;
+            Vector3 deltaPosition = animator.deltaPosition;
+            deltaPosition.y = 0;
+            Vector3 velocity = deltaPosition / delta;
+            playerLocomotion.rigidBody.velocity = velocity;
         }
 
         //=================================================================================================

@@ -12,6 +12,10 @@ namespace PXELDAR
         public float mouseX;
         public float mouseY;
 
+        public bool rollInput;
+        public bool rollFlag;
+        public bool isInteracting;
+
         private PlayerControls _inputActions;
         private CameraHandler _cameraHandler;
 
@@ -62,6 +66,7 @@ namespace PXELDAR
         public void TickInput(float delta)
         {
             MoveInput(delta);
+            HandleRollInput(delta);
         }
 
         //=================================================================================================
@@ -76,5 +81,20 @@ namespace PXELDAR
         }
 
         //=================================================================================================
+
+        private void HandleRollInput(float delta)
+        {
+            rollInput = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
+
+            if (rollInput)
+            {
+                rollFlag = true;
+            }
+        }
+
+
+        //=================================================================================================
+
+
     }
 }

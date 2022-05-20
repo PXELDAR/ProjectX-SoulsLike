@@ -29,7 +29,7 @@ namespace PXELDAR
 
         //=================================================================================================
 
-        public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement)
+        public void UpdateAnimatorValues(float verticalMovement, float horizontalMovement, bool isSprinting)
         {
             #region Vertical
             float v = 0;
@@ -80,6 +80,12 @@ namespace PXELDAR
                 h = 0;
             }
             #endregion
+
+            if (isSprinting)
+            {
+                v = 2;
+                h = horizontalMovement;
+            }
 
             animator.SetFloat(_vertical, v, 0.1f, Time.deltaTime);
             animator.SetFloat(_horizontal, h, 0.1f, Time.deltaTime);

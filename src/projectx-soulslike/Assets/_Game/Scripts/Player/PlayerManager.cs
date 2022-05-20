@@ -26,6 +26,7 @@ namespace PXELDAR
         {
             _inputHandler.isInteracting = _animator.GetBool(_isInteractingKey);
             _inputHandler.rollFlag = false;
+            _inputHandler.sprintFlag = false;
         }
 
         //=================================================================================================

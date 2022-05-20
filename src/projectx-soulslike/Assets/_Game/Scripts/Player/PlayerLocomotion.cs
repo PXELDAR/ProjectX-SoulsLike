@@ -6,20 +6,22 @@ namespace PXELDAR
     {
         //=================================================================================================
 
-        private Transform _cameraObject;
-        private InputHandler _inputHandler;
-        private Vector3 _moveDirection;
+        public Rigidbody rigidBody;
+        public GameObject normalCamera;
+        public bool isSprinting;
 
         [HideInInspector] public Transform myTransform;
         [HideInInspector] public AnimatorHandler animatorHandler;
 
-        public Rigidbody rigidBody;
-        public GameObject normalCamera;
+        private Transform _cameraObject;
+        private InputHandler _inputHandler;
+        private Vector3 _moveDirection;
 
 
         [Header("STATS")]
         [SerializeField] private float _movementSpeed = 5;
         [SerializeField] private float _rotationSpeed = 10;
+        [SerializeField] private float _sprintSpeed = 7;
 
         //MOVEMENT
         private Vector3 _normalVector;
@@ -43,6 +45,7 @@ namespace PXELDAR
         {
             float delta = Time.deltaTime;
 
+            isSprinting = _inputHandler.b_Input;
             _inputHandler.TickInput(delta);
 
             HandleMovement(delta);
@@ -80,18 +83,30 @@ namespace PXELDAR
 
         public void HandleMovement(float delta)
         {
+            if (_inputHandler.rollFlag) return;
+
             _moveDirection = _cameraObject.forward * _inputHandler.vertical;
             _moveDirection += _cameraObject.right * _inputHandler.horizontal;
             _moveDirection.Normalize();
             _moveDirection.y = 0;
 
             float speed = _movementSpeed;
-            _moveDirection *= speed;
+
+            if (_inputHandler.sprintFlag)
+            {
+                speed = _sprintSpeed;
+                isSprinting = true;
+                _moveDirection *= speed;
+            }
+            else
+            {
+                _moveDirection *= speed;
+            }
 
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
             rigidBody.velocity = projectedVelocity;
 
-            animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0);
+            animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0, isSprinting);
 
             if (animatorHandler.canRotate)
             {

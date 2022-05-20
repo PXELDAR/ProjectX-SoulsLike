@@ -11,9 +11,12 @@ namespace PXELDAR
         public float moveAmount;
         public float mouseX;
         public float mouseY;
+        public float rollInputTimer;
 
-        public bool rollInput;
+
+        public bool b_Input;
         public bool rollFlag;
+        public bool sprintFlag;
         public bool isInteracting;
 
         private PlayerControls _inputActions;
@@ -84,11 +87,22 @@ namespace PXELDAR
 
         private void HandleRollInput(float delta)
         {
-            rollInput = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
+            b_Input = _inputActions.PlayerActions.Roll.phase == UnityEngine.InputSystem.InputActionPhase.Performed;
 
-            if (rollInput)
+            if (b_Input)
             {
-                rollFlag = true;
+                rollInputTimer += delta;
+                sprintFlag = true;
+            }
+            else
+            {
+                if (rollInputTimer > 0 && rollInputTimer < 0.5f)
+                {
+                    sprintFlag = false;
+                    rollFlag = true;
+                }
+
+                rollInputTimer = 0;
             }
         }
 

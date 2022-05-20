@@ -18,12 +18,13 @@ namespace PXELDAR
 
         private const string _verticalKey = "Vertical";
         private const string _horizontalKey = "Horizontal";
+        private const string _isInteractingKey = "isInteracting";
 
         //=================================================================================================
 
         public void Initialize()
         {
-            _playerManager = GetComponentInChildren<PlayerManager>();
+            _playerManager = GetComponentInParent<PlayerManager>();
             animator = GetComponent<Animator>();
             _inputHandler = GetComponentInParent<InputHandler>();
             _playerLocomotion = GetComponentInParent<PlayerLocomotion>();
@@ -100,7 +101,7 @@ namespace PXELDAR
         public void PlayTargetAnimation(string targetAnim, bool isInteracting)
         {
             animator.applyRootMotion = isInteracting;
-            animator.SetBool("isInteracting", isInteracting);
+            animator.SetBool(_isInteractingKey, isInteracting);
             animator.CrossFade(targetAnim, 0.2f);
         }
 

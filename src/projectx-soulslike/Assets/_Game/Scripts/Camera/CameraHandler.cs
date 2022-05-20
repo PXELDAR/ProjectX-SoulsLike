@@ -1,9 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace PXELDAR
 {
+    [DefaultExecutionOrder(-1)]
     public class CameraHandler : MonoBehaviour
     {
         //=================================================================================================

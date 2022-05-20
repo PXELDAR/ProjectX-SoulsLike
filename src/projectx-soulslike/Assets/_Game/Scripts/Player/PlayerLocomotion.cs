@@ -15,17 +15,32 @@ namespace PXELDAR
         private InputHandler _inputHandler;
         private PlayerManager _playerManager;
         private Transform _cameraObject;
-        private Vector3 _moveDirection;
+        public Vector3 moveDirection;
+
+
+        [Header("GROUND & AIR DETECTION STATS")]
+        public float inAirTimer;
+        [SerializeField] private float _groundDetectionRayStartPoint = 0.5f;
+        [SerializeField] private float _minimumDistanceNeededToFall = 1f;
+        [SerializeField] private float _groundDirectionRayDistance = 0.2f;
+        private LayerMask _ignoreForGroundCheck;
 
 
         [Header("MOVEMENT STATS")]
         [SerializeField] private float _movementSpeed = 5;
         [SerializeField] private float _rotationSpeed = 10;
         [SerializeField] private float _sprintSpeed = 7;
+        [SerializeField] private float _fallSpeed = 45;
 
-        //MOVEMENT
         private Vector3 _normalVector;
         private Vector3 _targetPosition;
+
+        private const string _fallAnimationKey = "Fall";
+        private const string _locomotionAnimationKey = "Locomotion";
+        private const string _landAnimationKey = "Land2";
+        private const string _rollAnimationKey = "Roll";
+        private const string _isInteractingKey = "isInteracting";
+
 
         //=================================================================================================
 
@@ -38,11 +53,13 @@ namespace PXELDAR
             _cameraObject = Camera.main.transform;
             myTransform = transform;
             animatorHandler.Initialize();
+
+            _playerManager.isGrounded = true;
+            _ignoreForGroundCheck = ~(1 << 8 | 1 << 11);
         }
 
         //=================================================================================================
 
-        //MOVEMENT
         private void HandleRotation(float delta)
         {
             Vector3 targetDirection = Vector3.zero;
@@ -73,10 +90,12 @@ namespace PXELDAR
         {
             if (_inputHandler.rollFlag) return;
 
-            _moveDirection = _cameraObject.forward * _inputHandler.vertical;
-            _moveDirection += _cameraObject.right * _inputHandler.horizontal;
-            _moveDirection.Normalize();
-            _moveDirection.y = 0;
+            if (_playerManager.isInteracting) return;
+
+            moveDirection = _cameraObject.forward * _inputHandler.vertical;
+            moveDirection += _cameraObject.right * _inputHandler.horizontal;
+            moveDirection.Normalize();
+            moveDirection.y = 0;
 
             float speed = _movementSpeed;
 
@@ -84,14 +103,14 @@ namespace PXELDAR
             {
                 speed = _sprintSpeed;
                 _playerManager.isSprinting = true;
-                _moveDirection *= speed;
+                moveDirection *= speed;
             }
             else
             {
-                _moveDirection *= speed;
+                moveDirection *= speed;
             }
 
-            Vector3 projectedVelocity = Vector3.ProjectOnPlane(_moveDirection, _normalVector);
+            Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, _normalVector);
             rigidBody.velocity = projectedVelocity;
 
             animatorHandler.UpdateAnimatorValues(_inputHandler.moveAmount, 0, _playerManager.isSprinting);
@@ -106,18 +125,18 @@ namespace PXELDAR
 
         public void HandleRollingAndSprinting(float delta)
         {
-            if (animatorHandler.animator.GetBool("isInteracting")) return;
+            if (animatorHandler.animator.GetBool(_isInteractingKey)) return;
 
             if (_inputHandler.rollFlag)
             {
-                _moveDirection = _cameraObject.forward * _inputHandler.vertical;
-                _moveDirection += _cameraObject.right * _inputHandler.horizontal;
+                moveDirection = _cameraObject.forward * _inputHandler.vertical;
+                moveDirection += _cameraObject.right * _inputHandler.horizontal;
 
                 if (_inputHandler.moveAmount > 0)
                 {
-                    animatorHandler.PlayTargetAnimation("Roll", true);
-                    _moveDirection.y = 0;
-                    Quaternion rollRotation = Quaternion.LookRotation(_moveDirection);
+                    animatorHandler.PlayTargetAnimation(_rollAnimationKey, true);
+                    moveDirection.y = 0;
+                    Quaternion rollRotation = Quaternion.LookRotation(moveDirection);
                     myTransform.rotation = rollRotation;
                 }
                 else
@@ -125,6 +144,101 @@ namespace PXELDAR
                     // animatorHandler.PlayTargetAnimation("Backstep", true);
                 }
             }
+        }
+
+        //=================================================================================================
+
+        public void HandleFalling(float delta, Vector3 moveDirection)
+        {
+            _playerManager.isGrounded = false;
+            RaycastHit hit;
+            Vector3 origin = myTransform.position;
+            origin.y += _groundDetectionRayStartPoint;
+
+            if (Physics.Raycast(origin, myTransform.forward, out hit, 0.4f))
+            {
+                moveDirection = Vector3.zero;
+            }
+
+            if (_playerManager.isInAir)
+            {
+                rigidBody.AddForce(-Vector3.up * _fallSpeed);
+                rigidBody.AddForce(moveDirection * _fallSpeed / 10f);
+            }
+
+            Vector3 direction = moveDirection;
+            direction.Normalize();
+            origin = origin + direction * _groundDirectionRayDistance;
+
+            _targetPosition = myTransform.position;
+
+            Debug.DrawRay(origin, -Vector3.up * _minimumDistanceNeededToFall, Color.red, 0.1f, false);
+
+            if (Physics.Raycast(origin, -Vector3.up, out hit, _minimumDistanceNeededToFall, ~_ignoreForGroundCheck))
+            {
+                _normalVector = hit.normal;
+                Vector3 targetPosition = hit.point;
+                _playerManager.isGrounded = true;
+                _targetPosition.y = targetPosition.y;
+
+                if (_playerManager.isInAir)
+                {
+                    if (inAirTimer > 0.5f)
+                    {
+                        Debug.Log("you were in air for: " + inAirTimer);
+                        animatorHandler.PlayTargetAnimation(_landAnimationKey, true);
+                        inAirTimer = 0;
+                    }
+                    else
+                    {
+                        animatorHandler.PlayTargetAnimation(_locomotionAnimationKey, false);
+                        inAirTimer = 0;
+                    }
+
+                    _playerManager.isInAir = false;
+                }
+            }
+            else
+            {
+                if (_playerManager.isGrounded)
+                {
+                    _playerManager.isGrounded = false;
+                }
+
+                if (!_playerManager.isInAir)
+                {
+                    if (!_playerManager.isInteracting)
+                    {
+                        animatorHandler.PlayTargetAnimation(_fallAnimationKey, true);
+                    }
+
+                    Vector3 velocity = rigidBody.velocity;
+                    velocity.Normalize();
+                    rigidBody.velocity = velocity * (_movementSpeed / 2);
+                    _playerManager.isInAir = true;
+                }
+            }
+
+            if (_playerManager.isInteracting || _inputHandler.moveAmount > 0)
+            {
+                myTransform.position = Vector3.Lerp(myTransform.position, _targetPosition, Time.deltaTime / 0.1f);
+            }
+            else
+            {
+                myTransform.position = _targetPosition;
+            }
+
+            // if (_playerManager.isGrounded)
+            // {
+            //     if (_playerManager.isInteracting || _inputHandler.moveAmount > 0)
+            //     {
+            //         myTransform.position = Vector3.Lerp(myTransform.position, _targetPosition, Time.deltaTime);
+            //     }
+            //     else
+            //     {
+            //         myTransform.position = _targetPosition;
+            //     }
+            // }
         }
 
         //=================================================================================================

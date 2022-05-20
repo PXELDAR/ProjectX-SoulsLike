@@ -13,7 +13,6 @@ namespace PXELDAR
         public float mouseY;
         public float rollInputTimer;
 
-
         public bool b_Input;
         public bool rollFlag;
         public bool sprintFlag;
@@ -41,10 +40,6 @@ namespace PXELDAR
         {
             _inputActions.Disable();
         }
-
-        //=================================================================================================
-
-
 
         //=================================================================================================
 
@@ -88,9 +83,7 @@ namespace PXELDAR
             }
         }
 
-
         //=================================================================================================
-
 
     }
 }

@@ -9,6 +9,8 @@ namespace PXELDAR
         [Header("PLAYER FLAGS")]
         public bool isInteracting;
         public bool isSprinting;
+        public bool isInAir;
+        public bool isGrounded;
 
 
         private CameraHandler _cameraHandler;
@@ -45,6 +47,7 @@ namespace PXELDAR
             _inputHandler.TickInput(delta);
             _playerLocomotion.HandleMovement(delta);
             _playerLocomotion.HandleRollingAndSprinting(delta);
+            _playerLocomotion.HandleFalling(delta, _playerLocomotion.moveDirection);
         }
 
         //=================================================================================================
@@ -67,6 +70,11 @@ namespace PXELDAR
             _inputHandler.rollFlag = false;
             _inputHandler.sprintFlag = false;
             isSprinting = _inputHandler.b_Input;
+
+            if (isInAir)
+            {
+                _playerLocomotion.inAirTimer = _playerLocomotion.inAirTimer + Time.deltaTime;
+            }
         }
 
         //=================================================================================================

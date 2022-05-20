@@ -588,7 +588,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 8df71083e2bfdc64da088f73a798859f, type: 3}
       propertyPath: m_Name
-      value: T-Pose
+      value: Player
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8df71083e2bfdc64da088f73a798859f, type: 3}
@@ -635,6 +635,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animator: {fileID: 243363423}
   canRotate: 1
+--- !u!114 &243363425
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243363422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9941c2995349a7d42b1240c6e721c807, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &272278105
 GameObject:
   m_ObjectHideFlags: 0
@@ -744,6 +756,7 @@ GameObject:
   - component: {fileID: 332159713}
   - component: {fileID: 332159712}
   - component: {fileID: 332159714}
+  - component: {fileID: 332159715}
   m_Layer: 10
   m_Name: Player
   m_TagString: Untagged
@@ -858,6 +871,20 @@ MonoBehaviour:
   isSprinting: 0
   isInAir: 0
   isGrounded: 0
+--- !u!114 &332159715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 332159708}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 690b7b251e601c94a84e9611cfcac766, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rightWeapon: {fileID: 11400000, guid: 58d1ef92137b2c04f934d1e06e97c41f, type: 2}
+  leftWeapon: {fileID: 11400000, guid: 58d1ef92137b2c04f934d1e06e97c41f, type: 2}
 --- !u!1 &346515293
 GameObject:
   m_ObjectHideFlags: 0
@@ -1239,6 +1266,32 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 443955388}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &459521785 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2715566404302941441, guid: 8df71083e2bfdc64da088f73a798859f, type: 3}
+  m_PrefabInstance: {fileID: 243363420}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &459521786 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 1852576806548013000, guid: 8df71083e2bfdc64da088f73a798859f, type: 3}
+  m_PrefabInstance: {fileID: 243363420}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &459521787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 459521785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f30d87078f4149418dd8fc86fbc2d14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentOverride: {fileID: 459521786}
+  isLeftHandSlot: 0
+  isRightHandSlot: 1
+  currentWeaponModel: {fileID: 0}
 --- !u!1 &497184453
 GameObject:
   m_ObjectHideFlags: 0
@@ -1429,6 +1482,32 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 578506728}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &602888961 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: -4728426434207774260, guid: 8df71083e2bfdc64da088f73a798859f, type: 3}
+  m_PrefabInstance: {fileID: 243363420}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &602888962 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 6502182839619065283, guid: 8df71083e2bfdc64da088f73a798859f, type: 3}
+  m_PrefabInstance: {fileID: 243363420}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &602888963
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 602888961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0f30d87078f4149418dd8fc86fbc2d14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  parentOverride: {fileID: 1705951026}
+  isLeftHandSlot: 1
+  isRightHandSlot: 0
+  currentWeaponModel: {fileID: 0}
 --- !u!1 &605775023
 GameObject:
   m_ObjectHideFlags: 0
@@ -2474,6 +2553,36 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1470128834}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1705951025
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1705951026}
+  m_Layer: 0
+  m_Name: Left Hand Override
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1705951026
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1705951025}
+  m_LocalRotation: {x: 0.03596712, y: -0.9644008, z: 0.09911048, w: 0.24251688}
+  m_LocalPosition: {x: 0.024, y: 0.021, z: 0.077}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 602888962}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 12.041, y: -151.901, z: -1.248}
 --- !u!1 &1835508365
 GameObject:
   m_ObjectHideFlags: 0

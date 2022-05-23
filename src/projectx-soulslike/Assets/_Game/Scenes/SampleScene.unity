@@ -831,6 +831,7 @@ MonoBehaviour:
   _minimumDistanceNeededToFall: 1
   _groundDirectionRayDistance: 0.2
   _movementSpeed: 5
+  _walkSpeed: 1
   _rotationSpeed: 10
   _sprintSpeed: 7
   _fallSpeed: 80

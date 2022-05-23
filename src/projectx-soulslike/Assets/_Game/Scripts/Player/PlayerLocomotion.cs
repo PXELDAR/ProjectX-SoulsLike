@@ -28,6 +28,7 @@ namespace PXELDAR
 
         [Header("MOVEMENT STATS")]
         [SerializeField] private float _movementSpeed = 5;
+        [SerializeField] private float _walkSpeed = 2;
         [SerializeField] private float _rotationSpeed = 10;
         [SerializeField] private float _sprintSpeed = 7;
         [SerializeField] private float _fallSpeed = 45;
@@ -99,7 +100,7 @@ namespace PXELDAR
 
             float speed = _movementSpeed;
 
-            if (_inputHandler.sprintFlag)
+            if (_inputHandler.sprintFlag && _inputHandler.moveAmount > 0.5f)
             {
                 speed = _sprintSpeed;
                 _playerManager.isSprinting = true;
@@ -107,7 +108,16 @@ namespace PXELDAR
             }
             else
             {
-                moveDirection *= speed;
+                if (_inputHandler.moveAmount < 0.5f)
+                {
+                    moveDirection *= _walkSpeed;
+                    _playerManager.isSprinting = false;
+                }
+                else
+                {
+                    moveDirection *= speed;
+                    _playerManager.isSprinting = false;
+                }
             }
 
             Vector3 projectedVelocity = Vector3.ProjectOnPlane(moveDirection, _normalVector);
@@ -185,7 +195,6 @@ namespace PXELDAR
                 {
                     if (inAirTimer > 0.5f)
                     {
-                        Debug.Log("you were in air for: " + inAirTimer);
                         animatorHandler.PlayTargetAnimation(_landAnimationKey, true);
                         inAirTimer = 0;
                     }
@@ -227,18 +236,6 @@ namespace PXELDAR
             {
                 myTransform.position = _targetPosition;
             }
-
-            // if (_playerManager.isGrounded)
-            // {
-            //     if (_playerManager.isInteracting || _inputHandler.moveAmount > 0)
-            //     {
-            //         myTransform.position = Vector3.Lerp(myTransform.position, _targetPosition, Time.deltaTime);
-            //     }
-            //     else
-            //     {
-            //         myTransform.position = _targetPosition;
-            //     }
-            // }
         }
 
         //=================================================================================================

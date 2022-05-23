@@ -69,7 +69,6 @@ namespace PXELDAR
         {
             _inputHandler.rollFlag = false;
             _inputHandler.sprintFlag = false;
-            isSprinting = _inputHandler.b_Input;
 
             if (isInAir)
             {

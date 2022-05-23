@@ -10,6 +10,10 @@ namespace PXELDAR
         public GameObject modelPrefab;
         public bool isUnarmed;
 
+        [Header("ONE HANDED ATTACK ANIMATIONS")]
+        public string OH_Light_Attack_1;
+        public string OH_Heavy_Attack_1;
+
         //=================================================================================================
 
     }

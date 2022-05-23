@@ -14,13 +14,25 @@ namespace PXELDAR
         public float rollInputTimer;
 
         public bool b_Input;
+        public bool rb_Input;
+        public bool rt_Input;
         public bool rollFlag;
         public bool sprintFlag;
 
         private PlayerControls _inputActions;
+        private PlayerAttacker _playerAttacker;
+        private PlayerInventory _playerInventory;
 
         private Vector2 _movementInput;
         private Vector2 _cameraInput;
+
+        //=================================================================================================
+
+        private void Awake()
+        {
+            _playerAttacker = GetComponent<PlayerAttacker>();
+            _playerInventory = GetComponent<PlayerInventory>();
+        }
 
         //=================================================================================================
 
@@ -47,6 +59,7 @@ namespace PXELDAR
         {
             MoveInput(delta);
             HandleRollInput(delta);
+            HandleAttackInput(delta);
         }
 
         //=================================================================================================
@@ -80,6 +93,24 @@ namespace PXELDAR
                 }
 
                 rollInputTimer = 0;
+            }
+        }
+
+        //=================================================================================================
+
+        private void HandleAttackInput(float delta)
+        {
+            _inputActions.PlayerActions.RB.performed += i => rb_Input = true;
+            _inputActions.PlayerActions.RT.performed += i => rt_Input = true;
+
+            if (rb_Input)
+            {
+                _playerAttacker.HandleLightAttack(_playerInventory.rightWeapon);
+            }
+
+            if (rt_Input)
+            {
+                _playerAttacker.HandleHeavyAttack(_playerInventory.rightWeapon);
             }
         }
 

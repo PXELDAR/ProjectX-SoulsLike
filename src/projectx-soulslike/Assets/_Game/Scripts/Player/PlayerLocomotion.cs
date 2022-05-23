@@ -40,6 +40,7 @@ namespace PXELDAR
         private const string _locomotionAnimationKey = "Locomotion";
         private const string _landAnimationKey = "Land2";
         private const string _rollAnimationKey = "Roll";
+        private const string _backstepKey = "Backstep";
         private const string _isInteractingKey = "isInteracting";
 
 
@@ -151,7 +152,7 @@ namespace PXELDAR
                 }
                 else
                 {
-                    // animatorHandler.PlayTargetAnimation("Backstep", true);
+                    animatorHandler.PlayTargetAnimation(_backstepKey, true);
                 }
             }
         }
